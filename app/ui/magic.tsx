@@ -1,20 +1,23 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import clsx from "clsx";
-import { gsap } from "gsap";
-import { TextPlugin } from "gsap/TextPlugin";
 import { HiSparkles } from "react-icons/hi2";
+import { gsap } from "gsap";
+import { RoughEase } from "gsap/EasePack";
 
-gsap.registerPlugin(TextPlugin);
+gsap.registerPlugin(RoughEase);
 
 interface MagicProps {
 	children: React.ReactNode;
 	effect?: "magic" | "rainbow" | "glint" | "sparkle";
+	disabled?: boolean;
 }
 
-export default function Magic({ children, effect = "magic" }: MagicProps) {
+export default function Magic({ children, effect = "magic", disabled = false }: MagicProps) {
 	const spanRef = useRef<HTMLSpanElement>(null);
+	const sparkleRefs = useRef<(HTMLDivElement | null)[]>([]);
+	const [backgroundPosition, setBackgroundPosition] = useState("0%");
 
 	useEffect(() => {
 		if (effect === "glint" && spanRef.current) {
@@ -23,49 +26,42 @@ export default function Magic({ children, effect = "magic" }: MagicProps) {
 			const handleMouseMove = (e: MouseEvent) => {
 				const rect = spanElement.getBoundingClientRect();
 				const x = e.clientX - rect.left;
+				const positionX = (x / rect.width) * 100;
 
-				gsap.to(spanElement, {
-					backgroundPosition: `${x}px`,
-					ease: "power3.out",
-					duration: 0.3,
-				});
-			};
-
-			const handleMouseLeave = () => {
-				gsap.to(spanElement, {
-					backgroundPosition: "200%",
-					ease: "power3.out",
-					duration: 0.6,
-				});
+				setBackgroundPosition(`${positionX}%`);
 			};
 
 			spanElement.addEventListener("mousemove", handleMouseMove);
-			spanElement.addEventListener("mouseleave", handleMouseLeave);
 
 			return () => {
 				spanElement.removeEventListener("mousemove", handleMouseMove);
-				spanElement.removeEventListener("mouseleave", handleMouseLeave);
 			};
 		}
-	}, [effect]);
+	}, [effect, disabled]);
 
 	return (
-		
-		<span
-			ref={spanRef}
-			className={`${clsx({
-				"text-violet-500": effect === "magic",
-				"from-pink-500 via-yellow-500 to-blue-500 bg-gradient-to-r text-transparent bg-clip-text animate-gradient bg-[length:400%]":
-					effect === "rainbow",
-				"bg-gradient-to-l from-yellow-600 via-yellow-300 to-yellow-600 text-transparent bg-clip-text transition-all duration-300 bg-[length:400%]":
-					effect === "glint",
-				"": effect === "sparkle",
-			})}`}
-			style={{
-				backgroundPosition: "200% center",
-			}}>
-			{children}
-			{effect === "sparkle" && <HiSparkles className= "inline" />}
-		</span>
+		<>
+			{/* {effect === "sparkle" && <>&nbsp;</>} */}
+			<span
+				ref={spanRef}
+				style={{ backgroundPosition: backgroundPosition }}
+				className={clsx("relative transition-all ease-in", {
+					"bg-gradient-magic text-transparent bg-clip-text": effect === "magic" && !disabled,
+					"bg-gradient-rainbow animate-gradient-text bg-[length:800%] text-transparent bg-clip-text":
+						effect === "rainbow" && !disabled,
+					"duration-75 bg-gradient-to-l from-yellow-600 via-yellow-300 to-yellow-600 bg-[length:400%] text-transparent bg-clip-text":
+						effect === "glint" && !disabled,
+					"group/sparkle text-yellow-500 hover:text-yellow-300 hover:drop-shadow": effect === "sparkle" && !disabled,
+				})}>
+				{children}
+				{effect === "sparkle" && (
+					<>
+						<HiSparkles className="transition-all ease-in inline absolute left-3 bottom-0 opacity-0 scale-50 group-hover/sparkle:scale-100 group-hover/sparkle:opacity-75 group-hover/sparkle:-left-1 group-hover/sparkle:-bottom-1 text-yellow-400" />
+						<HiSparkles className="transition-all ease-in inline absolute left-7 bottom-0 opacity-0 scale-50 group-hover/sparkle:scale-100 group-hover/sparkle:opacity-75 group-hover/sparkle:left-6 group-hover/sparkle:bottom-2 text-amber-400" />
+						<HiSparkles className="transition-all ease-in inline absolute left-11 bottom-0 opacity-0 scale-50 group-hover/sparkle:scale-100 group-hover/sparkle:opacity-75 group-hover/sparkle:left-14 group-hover/sparkle:-bottom-2 text-orange-300" />
+					</>
+				)}
+			</span>
+		</>
 	);
 }

@@ -12,40 +12,19 @@ const config: Config = {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic":
 					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-			},
-			fontSize: {
-				sm: "0.750rem",
-				base: "1rem",
-				xl: "1.333rem",
-				"2xl": "1.777rem",
-				"3xl": "2.369rem",
-				"4xl": "3.158rem",
-				"5xl": "4.210rem",
-			},
-			fontFamily: {
-				heading: "Poppins",
-				body: "Inter",
-			},
-			fontWeight: {
-				normal: "400",
-				bold: "700",
-			},
-			colors: {
-				text: "rgb(var(--text))",
-				background: "rgb(var(--background))",
-				primary: "rgb(var(--primary))",
-				secondary: "rgb(var(--secondary))",
-				accent: "rgb(var(--accent))",
-			},
-			keyframes: {
-				gradient: {
-					"0%": { backgroundPosition: "0% 0%" },
-					"50%": { backgroundPosition: "100% 0%" },
-					"100%": { backgroundPosition: "0% 0%" },
-				},
+				"gradient-rainbow":
+					"linear-gradient(to right, #FF7A7A, #FFB570, #F7F763, #88F788, #63F7C7, #63A9F7, #B570FF, #FF7A7A)",
+				"gradient-magic":
+					"linear-gradient(60deg, rgba(0,244,255,1) 10%, rgba(177,0,255,1) 50%, rgba(249,0,255,1) 75%, rgba(255,0,103,1) 100%)",
 			},
 			animation: {
-				gradient: "gradient 3s ease infinite",
+				"gradient-text": "background-to-right 6s linear infinite",
+			},
+			keyframes: {
+				"background-to-right": {
+					"0%": { "background-position": "0% center" },
+					"100%": { "background-position": "115% center" },
+				},
 			},
 		},
 	},
