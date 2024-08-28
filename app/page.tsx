@@ -10,7 +10,9 @@ export default function Home() {
 			<Navigation />
 			<Intro />
 			<Buddy />
-			<Buddy />
+			<Buddy>
+				<h1>Naber la yarram ;)</h1>
+			</Buddy>
 		</div>
 	);
 }
