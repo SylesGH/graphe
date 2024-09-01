@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { gsap } from "gsap";
 import { useRef, useEffect } from "react";
+import { FaArrowDown } from "react-icons/fa6";
 
 interface ButtonProps {
 	variant: "primary" | "secondary";
@@ -10,35 +11,42 @@ interface ButtonProps {
 	endIcon?: React.ReactNode;
 	look?: "pill" | "square";
 	className?: string;
+	tabIndex?: number;
 }
 
-export default function Button({
+export function Button({
 	variant,
 	text,
 	endIcon,
 	look = "square",
-	className = "",
+	className,
+	tabIndex,
 }: ButtonProps) {
-	const clickHaptic = useRef<HTMLSpanElement>(null);
+	const clickHaptic = useRef<HTMLButtonElement>(null);
 
 	const handleClick = () => {
 		console.log("clicked");
-	
-		const haptic = gsap.fromTo(clickHaptic.current, {
-			scale: 0,
-			opacity: 1.2,
-		}, {
-			scale: 1,
-			opacity: 0,
-			duration: 1,
-			ease: "power4.out",
-		});
+
+		const haptic = gsap.fromTo(
+			clickHaptic.current,
+			{
+				scale: 0,
+				opacity: 1.2,
+			},
+			{
+				scale: 1,
+				opacity: 0,
+				duration: 1,
+				ease: "power4.out",
+			}
+		);
 
 		haptic.play();
 	};
 
 	return (
 		<button
+			tabIndex={tabIndex}
 			onClick={handleClick}
 			className={`
 			${className} ${clsx({
@@ -66,6 +74,45 @@ export default function Button({
 			<span
 				ref={clickHaptic}
 				className="absolute w-full aspect-square bg-white/70 rounded-full scale-0"></span>
+		</button>
+	);
+}
+
+export function ScrollDown() {
+	const arrow = useRef(null);
+
+	useEffect(() => {
+		const animation = gsap.fromTo(
+			arrow.current,
+			{
+				y: "-130%",
+			},
+			{
+				y: "130%",
+				duration: 1.5,
+				repeatDelay: 1,
+				repeat: -1,
+				ease: "power4.inOut",
+			}
+		);
+
+		return () => {
+			animation.kill();
+		};
+	}, []);
+
+	function handleScroll() {
+		window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+	}
+
+	return (
+		<button
+			tabIndex={7}
+			onClick={handleScroll}
+			className="hidden lg:flex outline-none border border-black/15 focus:ring ring-violet-400 z-10 absolute bottom-12 left-5 bg-neutral-200/65 backdrop-blur w-10 aspect-square rounded-full items-center justify-center text-2xl text-neutral-500 overflow-hidden cursor-pointer transition-all ease-out hover:scale-110">
+			<span ref={arrow}>
+				<FaArrowDown />
+			</span>
 		</button>
 	);
 }

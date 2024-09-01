@@ -2,58 +2,22 @@
 
 import Magic from "../magic";
 import Scramble from "../scramble";
-import Button from "../buttons";
+import { Button, ScrollDown } from "../buttons";
 import { FaArrowRight } from "react-icons/fa6";
-import { useEffect, useRef, useState } from "react";
+import { useRef} from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Background from "./background";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Intro() {
-	const background = useRef<SVGSVGElement>(null);
-	const [backgroundDimensions, setBackgroundDimensions] = useState({
-		width: 0,
-		height: 0,
-	});
-
-	useEffect(() => {
-		if (background.current) {
-			const { width, height } =
-				background.current.getBoundingClientRect();
-			setBackgroundDimensions({ width, height });
-		}
-
-		function handleMouseMove(event: MouseEvent) {
-			const mouseX = event.clientX;
-			const mouseY = event.clientY;
-
-			setBackgroundDimensions((prevDimensions) => {
-				const updatedDimensions = prevDimensions;
-
-				gsap.to(background.current, {
-					x: (mouseX - updatedDimensions.width / 2) / 12,
-					y: (mouseY - updatedDimensions.height / 2) / 3,
-					duration: 0.35,
-					ease: "expo.out",
-				});
-
-				/* console.log(
-					mouseX + updatedDimensions.width / 2,
-					mouseY + updatedDimensions.height / 2
-				); */
-
-				return updatedDimensions;
-			});
-		}
-
-		window.addEventListener("mousemove", handleMouseMove);
-
-		return () => {
-			window.removeEventListener("mousemove", handleMouseMove);
-		};
-	}, []);
-
+	const section = useRef<HTMLDivElement>(null);
+	const fade = useRef<HTMLDivElement>(null);
 	return (
-		<div className="z-0 w-full h-screen absolute top-0 p-5 lg:p-20 flex justify-start items-center overflow-hidden">
-			<div className="relative lg:top-16 w-full lg:w-[32em] h-3/4 lg:h-full backdrop-blur bg-gradient-to-b from-neutral-200/65 to-neutral-100/65 p-10 rounded-xl z-10">
+		<div className="z-0 w-full h-screen relative top-0 p-5 lg:p-20 flex justify-start items-center overflow-hidden">
+			<ScrollDown />
+			<div className="border-black/15 border relative lg:top-8 w-full lg:w-[32em] h-3/4 lg:h-full backdrop-blur bg-gradient-to-b from-neutral-200/65 to-neutral-100/65 p-10 rounded-xl z-10">
 				<h1 className="text-gray-800">
 					<Scramble words={["Imagine!", "Spark!", "Unleash!"]} />
 				</h1>
@@ -77,6 +41,7 @@ export default function Intro() {
 				</p>
 				<br />
 				<Button
+					tabIndex={6}
 					text="Get Started"
 					variant="secondary"
 					look="pill"
@@ -84,53 +49,10 @@ export default function Intro() {
 					className="hover:scale-105 origin-left"
 				/>
 			</div>
-			<svg
-				ref={background}
-				viewBox="0 0 500 500"
-				xmlns="http://www.w3.org/2000/svg"
-				className="scale-110 h-[120vh] lg:h-auto lg:w-full absolute left-0 -top-20 lg:top-0 pointer-events-none z-0 rotate-90 origin-center *:fill-neutral-300 *:stroke-neutral-100">
-				<path
-					d="M 645.316 147.381 H 674.087 A 11.489 11.489 0 0 1 685.576 158.87 V 187.641 A 11.489 11.489 0 0 1 674.087 199.13 H 645.316 A 11.489 11.489 0 0 1 633.827 187.641 V 158.87 A 11.489 11.489 0 0 1 645.316 147.381 Z M 645.316 164.615 V 181.897 A 5.745 5.745 0 0 0 651.061 187.641 H 668.343 A 5.745 5.745 0 0 0 674.087 181.897 V 164.615 A 5.745 5.745 0 0 0 668.343 158.87 H 651.061 A 5.745 5.745 0 0 0 645.316 164.615 Z"
-					transform="matrix(0.941339149177, 0.337462007086, -0.337462007086, 0.941339149177, -448.402136808662, -282.754246156724)"></path>
-				<path
-					d="M 700.795 224.688 H 756.476 A 17.234 17.234 0 0 1 773.71 241.922 V 297.603 A 17.234 17.234 0 0 1 756.476 314.837 H 700.795 A 17.234 17.234 0 0 1 683.561 297.603 V 241.922 A 17.234 17.234 0 0 1 700.795 224.688 Z M 700.795 250.539 V 288.986 A 8.617 8.617 0 0 0 709.412 297.603 H 747.859 A 8.617 8.617 0 0 0 756.476 288.986 V 250.539 A 8.617 8.617 0 0 0 747.859 241.922 H 709.412 A 8.617 8.617 0 0 0 700.795 250.539 Z"
-					transform="matrix(0.632126982404, 0.774864812801, -0.774864812801, 0.632126982404, 19.743736561294, -461.200110632182)"></path>
-				<path
-					d="M 402.22 390.502 H 521.959 A 34.467 34.467 0 0 1 556.426 424.969 V 544.708 A 34.467 34.467 0 0 1 521.959 579.175 H 402.22 A 34.467 34.467 0 0 1 367.753 544.708 V 424.969 A 34.467 34.467 0 0 1 402.22 390.502 Z M 402.22 442.203 V 527.474 A 17.234 17.234 0 0 0 419.453 544.708 H 504.725 A 17.234 17.234 0 0 0 521.959 527.474 V 442.203 A 17.234 17.234 0 0 0 504.725 424.969 H 419.453 A 17.234 17.234 0 0 0 402.22 442.203 Z"
-					transform="matrix(0.453049905579, 0.891485155824, -0.891485155824, 0.453049905579, 227.634555393972, -142.608141163113)"></path>
-				<path
-					d="M 683.542 -6.032 H 762.702 A 22.978 22.978 0 0 1 785.68 16.946 V 96.106 A 22.978 22.978 0 0 1 762.702 119.084 H 683.542 A 22.978 22.978 0 0 1 660.564 96.106 V 16.946 A 22.978 22.978 0 0 1 683.542 -6.032 Z M 683.542 28.435 V 84.617 A 11.489 11.489 0 0 0 695.031 96.106 H 751.213 A 11.489 11.489 0 0 0 762.702 84.617 V 28.435 A 11.489 11.489 0 0 0 751.213 16.946 H 695.031 A 11.489 11.489 0 0 0 683.542 28.435 Z"
-					transform="matrix(0.977043575728, -0.213039552966, 0.213039552966, 0.977043575728, -338.802373212611, 97.92562249192)"></path>
-				<path
-					d="M 451 197.2 m -81.761 0 a 81.761 81.761 0 1 0 163.522 0 a 81.761 81.761 0 1 0 -163.522 0 Z M 451 197.2 m -49.056 0 a 49.056 49.056 0 0 1 98.112 0 a 49.056 49.056 0 0 1 -98.112 0 Z"
-					transform="matrix(-0.989263747468, -0.146141157602, 0.146141157602, -0.989263747468, 396.361641427308, 502.742162622645)"></path>
-				<path
-					d="M 834.2 104.4 m -36.034 0 a 36.034 36.034 0 1 0 72.068 0 a 36.034 36.034 0 1 0 -72.068 0 Z M 834.2 104.4 m -21.62 0 a 21.62 21.62 0 0 1 43.24 0 a 21.62 21.62 0 0 1 -43.24 0 Z"
-					transform="matrix(-0.790723300949, 0.612173718267, -0.612173718267, -0.790723300949, 1142.815795486491, -292.992590375319)"></path>
-				<path
-					d="M 750.2 342 m -93.948 0 a 93.948 93.948 0 1 0 187.896 0 a 93.948 93.948 0 1 0 -187.896 0 Z M 750.2 342 m -56.369 0 a 56.369 56.369 0 0 1 112.738 0 a 56.369 56.369 0 0 1 -112.738 0 Z"
-					transform="matrix(-0.860926657317, 0.508729093645, -0.508729093645, -0.860926657317, 1331.048624782982, 401.782585741053)"></path>
-				<path
-					d="M 625.311 275.187 Q 634.886 258.604 644.46 275.187 L 673.183 324.938 Q 682.757 341.521 663.608 341.521 L 606.163 341.521 Q 587.014 341.521 596.588 324.938 Z"
-					transform="matrix(0.97445377091, 0.224588175021, -0.224588175021, 0.97445377091, -404.626257250105, -111.111703621027)"></path>
-				<path
-					d="M 807.126 208.315 Q 816.872 191.434 826.618 208.315 L 855.857 258.957 Q 865.603 275.838 846.111 275.838 L 787.633 275.838 Q 768.141 275.838 777.887 258.957 Z"
-					transform="matrix(0.929567616619, 0.368651659611, -0.368651659611, 0.929567616619, -434.400793826591, -452.334479396559)"></path>
-				<path
-					d="M 860.927 162.394 Q 872.939 141.589 884.95 162.394 L 920.985 224.808 Q 932.997 245.613 908.974 245.613 L 836.903 245.613 Q 812.88 245.613 824.892 224.808 Z"
-					transform="matrix(0.426676602454, -0.904404266309, 0.904404266309, 0.426676602454, -98.915902658044, 941.236525255986)"></path>
-				<path d="M 323.695 431.574 Q 325.42 430.404 327.726 430.541 Q 330.308 430.695 332.507 432.435 Q 334.947 434.367 335.984 437.523 Q 337.122 440.99 336.167 444.724 Q 335.128 448.787 331.952 451.825 Q 328.525 455.105 323.695 456.151 Q 318.518 457.273 313.324 455.485 Q 307.79 453.581 303.903 448.95 Q 299.781 444.041 298.727 437.523 Q 297.615 430.644 300.242 423.983 Q 303.005 416.979 309.098 412.24 Q 315.484 407.274 323.695 406.216 Q 332.275 405.11 340.405 408.58 Q 348.878 412.197 354.468 419.756 Q 360.28 427.616 361.342 437.523 Q 362.444 447.802 358.128 457.403 Q 353.659 467.346 344.631 473.786 Q 335.299 480.444 323.695 481.509 Q 311.717 482.608 300.645 477.446 Q 289.233 472.125 281.942 461.629 Q 277.2 454.804 274.982 446.714"></path>
-				<path d="M 189.503 155.744 Q 190.711 155.114 192.179 155.313 Q 193.811 155.534 195.133 156.698 Q 196.587 157.978 197.152 159.948 Q 197.767 162.095 197.122 164.347 Q 196.424 166.78 194.476 168.561 Q 192.386 170.472 189.503 171.042 Q 186.429 171.65 183.382 170.55 Q 180.149 169.384 177.906 166.643 Q 175.537 163.749 174.964 159.948 Q 174.361 155.949 175.917 152.104 Q 177.549 148.073 181.085 145.368 Q 184.781 142.54 189.503 141.964 Q 194.426 141.364 199.069 143.379 Q 203.899 145.475 207.066 149.808 Q 210.354 154.305 210.932 159.948 Q 211.53 165.794 209.055 171.237 Q 206.496 176.865 201.366 180.495 Q 196.069 184.243 189.503 184.822 Q 182.734 185.419 176.492 182.484 Q 170.065 179.462 165.973 173.533 Q 161.764 167.436 161.184 159.948 Q 160.588 152.256 163.984 145.214 Q 167.468 137.988 174.195 133.434 Q 181.092 128.765 189.503 128.184 Q 198.119 127.589 205.959 131.445 Q 213.984 135.392 219 142.918 Q 223.323 149.403 224.43 157.191"></path>
-				<path
-					d="M 743.818 188.498 H 768.603 V 238.07 H 818.175 V 262.855 H 768.603 V 312.427 H 743.818 V 262.855 H 694.246 V 238.07 H 743.818 Z"
-					transform="matrix(0.934487773967, 0.355995225117, -0.355995225117, 0.934487773967, -583.335396875968, -471.990241408202)"></path>
-				<path
-					d="M 694.555 228.951 H 709.409 V 258.66 H 739.118 V 273.515 H 709.409 V 303.224 H 694.555 V 273.515 H 664.845 V 258.66 H 694.555 Z"
-					transform="matrix(0.977620920138, 0.210374277201, -0.210374277201, 0.977620920138, -238.584064224127, -74.148514898845)"></path>
-				<path
-					d="M 671.353 222.314 H 701.362 V 282.333 H 761.38 V 312.342 H 701.362 V 372.36 H 671.353 V 312.342 H 611.334 V 282.333 H 671.353 Z"
-					transform="matrix(0.888217643886, 0.459422917462, -0.459422917462, 0.888217643886, -297.314854283853, -111.573335402808)"></path>
-			</svg>
+			<Background />
+			<div
+				ref={fade}
+				className="absolute top-0 left-0 w-full h-full from-neutral-100 from-10% to-transparent to-50% bg-gradient-to-t z-0"></div>
 		</div>
 	);
 }
